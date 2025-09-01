@@ -17,7 +17,7 @@ end
 # A report is a JSON file containing an array of findings:
 # https://docs.gitlab.com/ci/testing/code_quality/#code-quality-report-format
 
-@kwdef struct Finding
+Base.@kwdef struct Finding
     description::String
     check_name::String
     fingerprint::String
@@ -130,7 +130,7 @@ function read_report(io_or_path)
             location_path = get(raw_location, "path") do
                 error("invalid report, missing location.path field")
             end,
-            location_lines_begin,
+            location_lines_begin = location_lines_begin,
         )
     end
 end
