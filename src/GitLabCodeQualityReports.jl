@@ -57,7 +57,7 @@ function warnings_findings(io_or_path)
             fingerprint = string(hash(m)),
             severity = "minor",
             location_path = m[:path],
-            location_lines_begin = m[:line],
+            location_lines_begin = parse(Int, m[:line]),
         )
     end
 end
