@@ -78,7 +78,7 @@ end
 
 function write_report(output_path::AbstractString, findings::Vector{Finding}; indent = nothing)
     open(output_path, "w") do io
-        write_report(io, findings, indent)
+        write_report(io, findings; indent = indent)
     end
 end
 
