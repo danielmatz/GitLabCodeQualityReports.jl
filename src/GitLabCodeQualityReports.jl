@@ -1,5 +1,6 @@
 module GitLabCodeQualityReports
 
+using SHA: sha256
 import JSON
 
 export Finding, warnings_findings, write_report, read_report
@@ -54,7 +55,7 @@ function warnings_findings(io_or_path)
         Finding(
             description = m[:description],
             check_name = "warnings",
-            fingerprint = string(hash(m)),
+            fingerprint = bytes2hex(sha256(string(m[:description], m[:module], m[:path], m[:line]))),
             severity = "minor",
             location_path = m[:path],
             location_lines_begin = parse(Int, m[:line]),
