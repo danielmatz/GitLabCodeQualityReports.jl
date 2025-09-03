@@ -2,6 +2,7 @@ module GitLabCodeQualityReports
 
 using SHA: sha256
 import JSON
+using Base.Filesystem
 
 export Finding, warnings_findings, write_report, read_report
 
@@ -48,7 +49,7 @@ end
 Return a `Vector` of [`Finding`](@ref)s for all warning messages in
 `io_or_path`.
 """
-function warnings_findings(io_or_path)
+function warnings_findings(io_or_path; root)
     pattern = r"(?m)^\s*┌ Warning:\s*(?<description>.*?)\s*└ @ (?<module>.*?) (?<path>.*?):(?<line>\d+)"
     contents = read(io_or_path, String)
     map(eachmatch(pattern, contents)) do m
@@ -57,7 +58,7 @@ function warnings_findings(io_or_path)
             check_name = "warnings",
             fingerprint = bytes2hex(sha256(string(m[:description], m[:module], m[:path], m[:line]))),
             severity = "minor",
-            location_path = m[:path],
+            location_path = relpath(m[:path], root),
             location_lines_begin = parse(Int, m[:line]),
         )
     end

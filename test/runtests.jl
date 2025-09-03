@@ -2,6 +2,7 @@ using Test
 using GitLabCodeQualityReports
 import Aqua
 import ExplicitImports
+using Logging
 
 @testset "GitLabCodeQualityReports" begin
     @testset "get_in" begin
@@ -81,6 +82,17 @@ import ExplicitImports
         roundtrip_findings = read_report(io)
 
         @test findings == roundtrip_findings
+    end
+
+    @testset "warnings_findings" begin
+        io = IOBuffer()
+        with_logger(SimpleLogger(io)) do
+            @warn "A warning"
+        end
+        seek(io, 0)
+        findings = warnings_findings(io; root = dirname(@__DIR__))
+        @test length(findings) == 1
+        @test findings[1].location_path == "test/runtests.jl"
     end
 
     @testset "Aqua" begin
