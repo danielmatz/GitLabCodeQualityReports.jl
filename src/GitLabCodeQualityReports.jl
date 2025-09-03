@@ -44,12 +44,15 @@ function JSON.lower(f::Finding)
 end
 
 """
-    warnings_findings(io_or_path)
+    warnings_findings(io_or_path; root)
 
 Return a `Vector` of [`Finding`](@ref)s for all warning messages in
 `io_or_path`.
+
+The file paths in the [`Finding`](@ref)s are reported relative to `root`, which
+defaults to `ENV["CI_PROJECT_DIR"]`.
 """
-function warnings_findings(io_or_path; root)
+function warnings_findings(io_or_path; root = ENV["CI_PROJECT_DIR"])
     pattern = r"(?m)^\s*┌ Warning:\s*(?<description>.*?)\s*└ @ (?<module>.*?) (?<path>.*?):(?<line>\d+)"
     contents = read(io_or_path, String)
     map(eachmatch(pattern, contents)) do m
