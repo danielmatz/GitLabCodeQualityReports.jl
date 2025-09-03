@@ -53,12 +53,13 @@ function warnings_findings(io_or_path; root)
     pattern = r"(?m)^\s*┌ Warning:\s*(?<description>.*?)\s*└ @ (?<module>.*?) (?<path>.*?):(?<line>\d+)"
     contents = read(io_or_path, String)
     map(eachmatch(pattern, contents)) do m
+        path = relpath(m[:path], root)
         Finding(
             description = m[:description],
             check_name = "warnings",
-            fingerprint = bytes2hex(sha256(string(m[:description], m[:module], m[:path], m[:line]))),
+            fingerprint = bytes2hex(sha256(string(m[:description], m[:module], path, m[:line]))),
             severity = "minor",
-            location_path = relpath(m[:path], root),
+            location_path = path,
             location_lines_begin = parse(Int, m[:line]),
         )
     end
