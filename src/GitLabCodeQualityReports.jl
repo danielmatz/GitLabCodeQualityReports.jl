@@ -2,7 +2,7 @@ module GitLabCodeQualityReports
 
 using SHA: sha256
 import JSON
-using Base.Filesystem
+using Base.Filesystem: relpath
 
 export Finding, warnings_findings, write_report, read_report
 
